@@ -1,0 +1,147 @@
+<problem><script type="loncapa/python">
+ 
+####################################################################
+# VERSION 06 - 2021/04/13
+# 
+####################################################################
+from math import *
+import numpy as np
+import scipy as sc
+
+####################################################################
+if not 'OfflineMode' in globals().keys():
+  OfflineMode = not 'anonymous_student_id' in globals().keys()
+if OfflineMode: 
+  anonymous_student_id = 'student'
+
+####################################################################
+def OfflinePrint( outtxt='' ):
+  if OfflineMode: print( outtxt )
+
+####################################################################
+def InitRandomGenerator( problem_id = '' ):
+    maxint = np.iinfo(np.int32).max
+    rnd_seed = hash( str( anonymous_student_id ) \
+                   + str(problem_id) ) % maxint
+    np.random.seed( rnd_seed )
+
+####################################################################
+def Disturb( val, dig, dist ):
+  ss = +1.0 if np.random.uniform() >= 0.5 else -1.0
+  rr = np.random.uniform() * ( dist - 0.1 )
+  val = val + ss * val * ( rr + 0.1 )
+  return round( val, dig ) 
+
+####################################################################
+# Uses the random number generator of numpy
+# This function should be used instead of random.choice()
+def RandomPick( lst ):
+  return lst[ np.random.randint( 0, len( lst ) ) ]
+
+####################################################################
+def NumericMultipleChoice( prefix, value, ndigs, suffix, entries, minDelta, 
+                             limits = 'both' ):
+
+    def fmt_val( val, dig ):
+        return "{vl:.{dg}f}".format( vl = val, dg = dig )
+
+    num_err = entries-1
+    options = [ [ "true", value ] ]
+    # returns a sign function as a function of the type of limits
+    signs = { 'greater': lambda : +1, 
+              'less'   : lambda : -1,
+              'both'   : lambda : +1 if np.random.uniform() > 0.5 else -1.0 }
+    # insert in the options list as a function of the sign
+    insertion = { +1 : lambda d : options.append( [ "false", options[-1][1] + d ] ),
+                  -1 : lambda d : options.insert( 0, [ "false", options[0][1] - d ]  ) }
+
+    for i in range( num_err ):
+        dd = np.fabs( minDelta ) * ( 1.0 + np.random.uniform() )
+        ss = signs[ limits ]()
+        insertion[ ss ]( dd )
+
+    np.random.shuffle(options)
+    
+    # set the global variables
+    gdic = globals()
+    for i, opt in enumerate( options ):
+        val = fmt_val( opt[1], ndigs ) + ' ' + suffix
+        gdic[ '%s_answer_%i' % (prefix,i) ] = opt[0]
+        gdic[ '%s_value_%i'  % (prefix,i) ] = val
+        OfflinePrint( '[%s_answer_%i] (%-5s) %s' % ( prefix, i, opt[0], val ) )
+    OfflinePrint()
+
+####################################################################
+def StringMultipleChoice( prefix, shuffle_lst, fixed_lst=None ):
+
+    # shuffle and pick num_err entries
+    options = list( shuffle_lst ) 
+    np.random.shuffle( options )
+    if fixed_lst != None:
+      options += list( fixed_lst )
+    
+    # set the global variables
+    gdic = globals()
+    for i, opt in enumerate( options ):
+        gdic[ '%s_answer_%i' % (prefix,i)  ] = opt[0]
+        gdic[ '%s_value_%i'  % (prefix,i)  ] = opt[1]
+        OfflinePrint( '[%s_answer_%i] (%-5s) %s\n' % ( prefix, i, opt[0], opt[1] ) )
+    OfflinePrint()
+
+####################################################################
+InitRandomGenerator( "Question 1")
+
+# Problem data
+Cp_max = 0.49 
+lambda_max = 7.5
+rho_w = 1025.0
+
+Ucur_lst  = ( 1.5, 2.0, 2.5 )  # [m] 
+Prated_lst = ( 0.50E6, 0.75E6, 1.00E6, 1.25E6 ) # [W]
+
+Ucur = RandomPick( Ucur_lst )
+Prated = RandomPick( Prated_lst )
+
+Prated_MW = Prated/1E6
+
+Poper = Prated * ( 0.5 + 0.3*np.random.uniform() )
+Poper_MW = round( Poper / 1E6, 2 ) 
+
+####################################################################
+Radius = np.sqrt( Prated / ( 0.5*rho_w*Ucur**3*np.pi*Cp_max ) )
+Diam = 2.0 * Radius
+
+opt = NumericMultipleChoice( prefix='a', value=Diam, ndigs=1, suffix='m', entries=5, minDelta=0.1, limits = 'both' )
+
+####################################################################
+Uoper = ( Poper / ( 0.5*rho_w*np.pi*Radius**2*Cp_max ) )**(1.0/3.0)
+
+Omega = lambda_max*Uoper / Radius
+
+NumericMultipleChoice( prefix='b', value=Omega, ndigs=2, suffix='rad/s', entries=5, minDelta=0.2, limits = 'both' )
+
+
+</script><p>    
+  
+Figure 1 presents the power coefficient curves of a horizontal-axis tidal turbine as function of the tip speed ratio \(\mathrm{TSR}=\lambda=\Omega R / U\), obtained at constant rotation rate for different positive pitch settings. 
+</p><p>
+If Reynolds number effects are neglected, these nondimensional curves will apply all to geometrically similar turbines independently of size (diameter) and rotation speed. 
+</p><p>
+The water density is assumed to be \(\rho=1025\,\)kg/m\(^3\)
+</p><p class="aligncenter"><img src="/static/MCTE_Cp_lambda_Texp.png" width="700"/></p>
+
+You are designing a turbine with rated power \(P= $Prated_MW\,\)MW, and rated current speed 
+\(U_\mathrm{rated}= $Ucur\,\)m/s. 
+You may assume the power coefficient is maximum \(\left(C_{P}=C_{P_\mathrm{max}}\right)\) at rated wind speed and rated power.
+  
+<p><b> a)</b> What is the turbine diameter? [m]  
+</p>
+  <multiplechoiceresponse><choicegroup type="MultipleChoice"><choice correct="$a_answer_0"> $a_value_0 </choice><choice correct="$a_answer_1"> $a_value_1 </choice><choice correct="$a_answer_2"> $a_value_2 </choice><choice correct="$a_answer_3"> $a_value_3 </choice><choice correct="$a_answer_4"> $a_value_4 </choice></choicegroup></multiplechoiceresponse>
+  
+<p><b> b) </b> Assume the turbine control approach follows the conventional variable-pitch, variable-rotational speed strategy. Calculate the rotational speed of the turbine at \(P=$Poper_MW\,\)MW. [rad/s]  
+</p>
+  
+  <multiplechoiceresponse><choicegroup type="MultipleChoice"><choice correct="$b_answer_0"> $b_value_0 </choice><choice correct="$b_answer_1"> $b_value_1 </choice><choice correct="$b_answer_2"> $b_value_2 </choice><choice correct="$b_answer_3"> $b_value_3 </choice><choice correct="$b_answer_4"> $b_value_4 </choice></choicegroup></multiplechoiceresponse>
+  
+</problem>
+
