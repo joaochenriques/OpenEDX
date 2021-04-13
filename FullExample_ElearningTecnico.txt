@@ -1,4 +1,5 @@
 <problem><script type="loncapa/python">
+<![CDATA[ 
  
 ####################################################################
 # VERSION 06 - 2021/04/13
@@ -98,7 +99,7 @@ Omega = lambda_max*Uoper / Radius
 
 NumericMultipleChoice( prefix='b', value=Omega, ndigs=2, suffix='rad/s', entries=5, minDelta=0.2, limits = 'both' )
 
-
+]]>
 </script><p>    
   
 Figure 1 presents the power coefficient curves of a horizontal-axis tidal turbine as function of the tip speed ratio \(\mathrm{TSR}=\lambda=\Omega R / U\), obtained at constant rotation rate for different positive pitch settings. 
