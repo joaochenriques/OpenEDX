@@ -1,12 +1,10 @@
-## MCTE 2020/2021
-
-**Barrages power limits**
+## Python examples for **Exonline**
 
 Click on the following links to run the jupyter notebooks on google colab 
 
-* **OfflineTesting.ipynb** [![Binder](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/joaochenriques/OpenEDX/blob/main/Offline_FullyDocumentedExample/OfflineTesting.ipynb)
+* **Offline__NO_COMMENTS.ipynb** [![Binder](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/joaochenriques/OpenEDX/blob/main/Offline/Offline__NO_COMMENTS.ipynb)
 
 * Similar to the previous notebook but with comments 
 
-**OfflineTesting_WITH_COMMENTS.ipynb.ipynb** [![Binder](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/joaochenriques/OpenEDX/blob/main/Offline_FullyDocumentedExample/OfflineTesting.ipynb)
+**Offline__COMMENTED.ipynb** [![Binder](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/joaochenriques/OpenEDX/blob/main/Offline/Offline__COMMENTED.ipynb)
 
